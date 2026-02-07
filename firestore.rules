@@ -1,0 +1,29 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // 允許讀取 config 集合（後台管理需要）
+    match /config/{document=**} {
+      allow read: if true;  // 任何人都可以讀取配置
+      allow write: if true; // 任何人都可以寫入配置（生產環境應該加上驗證）
+    }
+    
+    // 允許讀取 comments 集合（統計數據需要）
+    match /comments/{document=**} {
+      allow read: if true;  // 任何人都可以讀取
+      allow write: if true; // Cloud Functions 可以寫入
+    }
+    
+    // 允許讀取 users 集合（統計數據需要）
+    match /users/{document=**} {
+      allow read: if true;  // 任何人都可以讀取
+      allow write: if true; // Cloud Functions 可以寫入
+    }
+    
+    // 預設規則：拒絕其他所有訪問
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

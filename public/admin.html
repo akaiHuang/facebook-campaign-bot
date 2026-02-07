@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>抽獎機器人後台管理</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .card h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 20px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="text"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .hint {
+            font-size: 12px;
+            color: #999;
+            margin-top: 5px;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+        
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+        
+        .btn-danger {
+            background: #ff6b6b;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #ff5252;
+        }
+        
+        .status {
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .current-config {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .current-config p {
+            margin: 8px 0;
+            color: #555;
+        }
+        
+        .current-config strong {
+            color: #333;
+        }
+        
+        .tag {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin: 3px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .stat-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .loading.show {
+            display: block;
+        }
+        
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* 貼文清單樣式 */
+        .post-item {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+        }
+        
+        .post-item:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+            transform: translateX(5px);
+        }
+        
+        .post-item.selected {
+            border-color: #667eea;
+            background: #e0e7ff;
+            border-width: 3px;
+        }
+        
+        .post-id {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .post-preview {
+            color: #555;
+            font-size: 14px;
+            margin: 8px 0;
+            line-height: 1.4;
+        }
+        
+        .post-meta {
+            font-size: 12px;
+            color: #999;
+            margin-top: 8px;
+            display: flex;
+            gap: 15px;
+        }
+        
+        .post-meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 抽獎機器人後台管理</h1>
+            <p class="subtitle">Kreme Select 粉專自動回覆系統</p>
+        </div>
+
+        <div id="statusMessage"></div>
+
+        <!-- 當前設定 -->
+        <div class="card">
+            <h2>📊 當前設定</h2>
+            <div class="current-config" id="currentConfig">
+                <p><strong>監控文章：</strong><span id="currentPostIds">載入中...</span></p>
+                <p><strong>關鍵字：</strong><span id="currentKeywords">載入中...</span></p>
+                <p><strong>圖片數量：</strong><span id="currentImageCount">載入中...</span></p>
+            </div>
+        </div>
+
+        <!-- 文章設定 -->
+        <div class="card">
+            <h2>📝 文章設定</h2>
+            
+            <!-- 最近的貼文清單 -->
+            <div class="form-group">
+                <label>🔍 粉絲專頁最近的貼文（點擊選擇）</label>
+                <div id="recentPosts" style="max-height: 300px; overflow-y: auto; border: 2px solid #e0e0e0; border-radius: 6px; padding: 10px; margin-bottom: 15px;">
+                    <div style="text-align: center; color: #999; padding: 20px;">
+                        載入中...
+                    </div>
+                </div>
+                <button class="btn-secondary" onclick="loadRecentPosts()" style="margin-bottom: 20px;">🔄 重新載入貼文清單</button>
+            </div>
+            
+            <!-- 手動輸入 -->
+            <div class="form-group">
+                <label for="postIds">或手動輸入文章 ID（可多個，用逗號分隔）</label>
+                <textarea id="postIds" placeholder="例如：261205178149570_123456789,261205178149570_987654321&#10;留空表示監控所有文章"></textarea>
+                <div class="hint">
+                    💡 提示：文章 ID 格式為「粉專ID_貼文ID」<br>
+                    ⚠️ <strong>留空 = 監控所有貼文</strong><br>
+                    ⚠️ <strong>填寫 = 只監控指定貼文</strong>
+                </div>
+            </div>
+            <button class="btn-primary" onclick="updatePostIds()">✅ 更新文章設定</button>
+        </div>
+
+        <!-- 關鍵字設定 -->
+        <div class="card">
+            <h2>🔑 留言關鍵字設定</h2>
+            <div class="form-group">
+                <label for="commentKeywords">留言觸發關鍵字（用逗號分隔）</label>
+                <input type="text" id="commentKeywords" placeholder="例如：香蕉,旗袍">
+                <div class="hint">
+                    💡 用戶留言包含任一關鍵字即會觸發自動回覆<br>
+                    ⚠️ <strong>留空 = 使用預設關鍵字（抽獎,參加,+1,我要）</strong><br>
+                    ⚠️ <strong>填寫 = 完全取代預設關鍵字（不包含預設字）</strong>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="messageKeywords">私訊觸發關鍵字（用逗號分隔）</label>
+                <input type="text" id="messageKeywords" placeholder="例如：領取,我要">
+                <div class="hint">
+                    💡 用戶私訊包含任一關鍵字即會發送圖片<br>
+                    ⚠️ <strong>留空 = 使用預設關鍵字（領取）</strong><br>
+                    ⚠️ <strong>填寫 = 完全取代預設關鍵字</strong>
+                </div>
+            </div>
+            
+            <button class="btn-primary" onclick="updateKeywords()">✅ 更新關鍵字</button>
+        </div>
+
+        <!-- 圖片設定 -->
+        <div class="card">
+            <h2>🖼️ 圖片設定</h2>
+            <div class="form-group">
+                <label for="imageUrl1">圖片 1 URL</label>
+                <input type="text" id="imageUrl1" placeholder="https://...">
+            </div>
+            <div class="form-group">
+                <label for="imageUrl2">圖片 2 URL</label>
+                <input type="text" id="imageUrl2" placeholder="https://...">
+            </div>
+            <div class="hint">💡 請使用 Firebase Storage 或其他穩定的圖床</div>
+            <button class="btn-primary" onclick="updateImages()">✅ 更新圖片</button>
+        </div>
+
+        <!-- 統計數據 -->
+        <div class="card">
+            <h2>📈 使用統計</h2>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-number" id="totalUsers">-</div>
+                    <div class="stat-label">總用戶數</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number" id="totalComments">-</div>
+                    <div class="stat-label">總留言數</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number" id="todayResponses">-</div>
+                    <div class="stat-label">今日回應</div>
+                </div>
+            </div>
+            <button class="btn-secondary" onclick="loadStats()" style="margin-top: 15px;">🔄 重新載入統計</button>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p style="margin-top: 10px; color: white;">處理中...</p>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, where, Timestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDWP-ZGDPCshkOxWFjOp7sNHj4vp9_j5rg",
+            authDomain: "fanbot-b8f92.firebaseapp.com",
+            projectId: "fanbot-b8f92",
+            storageBucket: "fanbot-b8f92.firebasestorage.app",
+            messagingSenderId: "724706634599",
+            appId: "1:724706634599:web:d9f5f9c8f9c8f9c8f9c8f9"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // 載入當前設定
+        async function loadConfig() {
+            try {
+                const configDoc = await getDoc(doc(db, 'config', 'bot'));
+                if (configDoc.exists()) {
+                    const data = configDoc.data();
+                    
+                    // 顯示當前設定
+                    const postIds = data.targetPostIds || [];
+                    document.getElementById('currentPostIds').innerHTML = 
+                        postIds.length > 0 
+                            ? postIds.map(id => `<span class="tag">${id}</span>`).join('')
+                            : '<span class="tag">全部文章</span>';
+                    
+                    // 顯示留言關鍵字
+                    const commentKeywords = data.commentKeywords || [];
+                    const commentDisplay = commentKeywords.length > 0
+                        ? commentKeywords.map(kw => `<span class="tag">${kw}</span>`).join('')
+                        : '<span class="tag">預設：抽獎,參加,+1,我要</span>';
+                    
+                    // 顯示私訊關鍵字
+                    const messageKeywords = data.messageKeywords || [];
+                    const messageDisplay = messageKeywords.length > 0
+                        ? messageKeywords.map(kw => `<span class="tag">${kw}</span>`).join('')
+                        : '<span class="tag">預設：領取</span>';
+                    
+                    document.getElementById('currentKeywords').innerHTML = 
+                        `<strong>留言：</strong>${commentDisplay}<br><strong>私訊：</strong>${messageDisplay}`;
+                    
+                    const imageUrls = data.imageUrls || [];
+                    document.getElementById('currentImageCount').textContent = imageUrls.length;
+                    
+                    // 填入表單
+                    document.getElementById('postIds').value = postIds.join(',');
+                    document.getElementById('commentKeywords').value = commentKeywords.join(',');
+                    document.getElementById('messageKeywords').value = messageKeywords.join(',');
+                    if (imageUrls[0]) document.getElementById('imageUrl1').value = imageUrls[0];
+                    if (imageUrls[1]) document.getElementById('imageUrl2').value = imageUrls[1];
+                } else {
+                    showMessage('尚無設定資料，請先設定機器人參數', 'info');
+                }
+            } catch (error) {
+                console.error('載入設定失敗:', error);
+                showMessage('載入設定失敗：' + error.message, 'error');
+            }
+        }
+
+        // 載入統計數據
+        async function loadStats() {
+            try {
+                const usersSnapshot = await getDocs(collection(db, 'users'));
+                document.getElementById('totalUsers').textContent = usersSnapshot.size;
+
+                const commentsSnapshot = await getDocs(collection(db, 'comments'));
+                document.getElementById('totalComments').textContent = commentsSnapshot.size;
+
+                // 今日回應數（簡化版，實際可以加入時間篩選）
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const todayComments = commentsSnapshot.docs.filter(doc => {
+                    const data = doc.data();
+                    return data.timestamp && data.timestamp.toDate() >= today;
+                });
+                document.getElementById('todayResponses').textContent = todayComments.length;
+            } catch (error) {
+                console.error('載入統計失敗:', error);
+            }
+        }
+
+        // 更新文章 ID
+        window.updatePostIds = async function() {
+            const postIdsText = document.getElementById('postIds').value.trim();
+            const postIds = postIdsText ? postIdsText.split(',').map(id => id.trim()).filter(id => id) : [];
+            
+            showLoading(true);
+            try {
+                await setDoc(doc(db, 'config', 'bot'), {
+                    targetPostIds: postIds,
+                    updatedAt: Timestamp.now()
+                }, { merge: true });
+                
+                showMessage(`✅ 文章設定已更新！${postIds.length > 0 ? `監控 ${postIds.length} 篇文章` : '監控所有文章'}`, 'success');
+                loadConfig();
+            } catch (error) {
+                showMessage('❌ 更新失敗：' + error.message, 'error');
+            }
+            showLoading(false);
+        };
+
+        // 更新關鍵字
+        window.updateKeywords = async function() {
+            const commentKeywordsText = document.getElementById('commentKeywords').value.trim();
+            const messageKeywordsText = document.getElementById('messageKeywords').value.trim();
+            
+            // 留言關鍵字：空白 = 使用預設，否則完全取代
+            const commentKeywords = commentKeywordsText 
+                ? commentKeywordsText.split(',').map(kw => kw.trim()).filter(kw => kw)
+                : [];  // 空陣列表示使用預設
+            
+            // 私訊關鍵字：空白 = 使用預設，否則完全取代
+            const messageKeywords = messageKeywordsText
+                ? messageKeywordsText.split(',').map(kw => kw.trim()).filter(kw => kw)
+                : [];  // 空陣列表示使用預設
+            
+            showLoading(true);
+            try {
+                await setDoc(doc(db, 'config', 'bot'), {
+                    commentKeywords: commentKeywords,
+                    messageKeywords: messageKeywords,
+                    updatedAt: Timestamp.now()
+                }, { merge: true });
+                
+                const commentMsg = commentKeywords.length > 0 
+                    ? `自訂 ${commentKeywords.length} 個留言關鍵字`
+                    : '使用預設留言關鍵字';
+                const messageMsg = messageKeywords.length > 0
+                    ? `自訂 ${messageKeywords.length} 個私訊關鍵字`
+                    : '使用預設私訊關鍵字';
+                
+                showMessage(`✅ 關鍵字已更新！<br>${commentMsg}<br>${messageMsg}`, 'success');
+                loadConfig();
+            } catch (error) {
+                showMessage('❌ 更新失敗：' + error.message, 'error');
+            }
+            showLoading(false);
+        };
+
+        // 更新圖片
+        window.updateImages = async function() {
+            const url1 = document.getElementById('imageUrl1').value.trim();
+            const url2 = document.getElementById('imageUrl2').value.trim();
+            
+            if (!url1 && !url2) {
+                showMessage('❌ 請至少輸入一個圖片 URL', 'error');
+                return;
+            }
+            
+            const imageUrls = [url1, url2].filter(url => url);
+            
+            showLoading(true);
+            try {
+                await setDoc(doc(db, 'config', 'bot'), {
+                    imageUrls: imageUrls,
+                    updatedAt: Timestamp.now()
+                }, { merge: true });
+                
+                showMessage(`✅ 圖片已更新！共 ${imageUrls.length} 張圖片`, 'success');
+                loadConfig();
+            } catch (error) {
+                showMessage('❌ 更新失敗：' + error.message, 'error');
+            }
+            showLoading(false);
+        };
+
+        // 顯示訊息
+        function showMessage(message, type) {
+            const statusDiv = document.getElementById('statusMessage');
+            statusDiv.innerHTML = `<div class="status ${type}">${message}</div>`;
+            setTimeout(() => {
+                statusDiv.innerHTML = '';
+            }, 5000);
+        }
+
+        // 顯示載入中
+        function showLoading(show) {
+            const loadingDiv = document.getElementById('loading');
+            if (show) {
+                loadingDiv.classList.add('show');
+            } else {
+                loadingDiv.classList.remove('show');
+            }
+        }
+
+        window.loadStats = loadStats;
+
+        // 載入最近的貼文清單（從 Facebook API）
+        async function loadRecentPosts() {
+            const container = document.getElementById('recentPosts');
+            container.innerHTML = '<div style="text-align: center; color: #999; padding: 20px;">載入中...</div>';
+            
+            try {
+                // 使用固定的配置（與 index.js 中的設定一致）
+                const PAGE_ACCESS_TOKEN = 'EAATMnASMNEsBP0ZBeIDKeO2DwtyzCk9yxyEu7ZAh18crGh59ONAePCw8YQK9KmtPEBpMOJShK72g8BEilGoxP1oUtef14orZACLdyZBrPKI232sFTCsebZC1sv6zZBAwUw4MgGHBjVtZBzoXuC2pZBPvPBDh4r59pjtUWGxyWv00aXr7L6n7ObXVcFHOnABod7aSqtUWiwZDZD';
+                const FACEBOOK_PAGE_ID = '261205178149570';
+                
+                // 調用 Facebook Graph API 獲取粉絲專頁貼文
+                const response = await fetch(
+                    `https://graph.facebook.com/v18.0/${FACEBOOK_PAGE_ID}/posts?fields=id,message,created_time,permalink_url&limit=20&access_token=${PAGE_ACCESS_TOKEN}`
+                );
+                
+                if (!response.ok) {
+                    throw new Error(`Facebook API 錯誤: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (!data.data || data.data.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align: center; color: #999; padding: 20px;">
+                            <p>📭 目前沒有貼文</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // 獲取目前選中的貼文 ID
+                const currentPostIds = document.getElementById('postIds').value.trim().split(',').map(id => id.trim()).filter(id => id);
+                
+                // 渲染貼文列表
+                container.innerHTML = data.data.map(post => {
+                    const isSelected = currentPostIds.includes(post.id);
+                    const message = post.message || '(無文字內容)';
+                    const preview = message.length > 80 ? message.substring(0, 80) + '...' : message;
+                    const timeAgo = getTimeAgo(new Date(post.created_time));
+                    
+                    return `
+                        <div class="post-item ${isSelected ? 'selected' : ''}" onclick="togglePostSelection('${post.id}')">
+                            <div class="post-id">📌 ${post.id}</div>
+                            <div class="post-preview">${preview}</div>
+                            <div class="post-meta">
+                                <span>� ${timeAgo}</span>
+                                <a href="${post.permalink_url}" target="_blank" onclick="event.stopPropagation()">🔗 查看貼文</a>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                
+            } catch (error) {
+                console.error('載入貼文失敗:', error);
+                container.innerHTML = `
+                    <div style="text-align: center; color: #e53e3e; padding: 20px;">
+                        ❌ 載入失敗：${error.message}
+                    </div>
+                `;
+            }
+        }
+        
+        // 切換貼文選擇
+        window.togglePostSelection = function(postId) {
+            const postIdsInput = document.getElementById('postIds');
+            const currentIds = postIdsInput.value.trim().split(',').map(id => id.trim()).filter(id => id);
+            
+            if (currentIds.includes(postId)) {
+                // 取消選擇
+                const newIds = currentIds.filter(id => id !== postId);
+                postIdsInput.value = newIds.join(',');
+            } else {
+                // 新增選擇
+                currentIds.push(postId);
+                postIdsInput.value = currentIds.join(',');
+            }
+            
+            // 重新載入清單以更新選中狀態
+            loadRecentPosts();
+        };
+        
+        // 計算時間差
+        function getTimeAgo(date) {
+            const now = new Date();
+            const diff = Math.floor((now - date) / 1000); // 秒
+            
+            if (diff < 60) return '剛剛';
+            if (diff < 3600) return `${Math.floor(diff / 60)} 分鐘前`;
+            if (diff < 86400) return `${Math.floor(diff / 3600)} 小時前`;
+            if (diff < 604800) return `${Math.floor(diff / 86400)} 天前`;
+            return date.toLocaleDateString('zh-TW');
+        }
+
+        // 初始化
+        loadConfig();
+        loadStats();
+        loadRecentPosts();
+    </script>
+</body>
+</html>

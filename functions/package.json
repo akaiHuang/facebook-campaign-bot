@@ -1,0 +1,14 @@
+{
+  "name": "fanpage-bot-functions",
+  "version": "1.0.0",
+  "description": "Facebook Fanpage Bot Cloud Functions",
+  "main": "index.js",
+  "engines": {
+    "node": "20"
+  },
+  "dependencies": {
+    "firebase-admin": "^12.0.0",
+    "firebase-functions": "^5.0.0",
+    "axios": "^1.6.0"
+  }
+}

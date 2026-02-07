@@ -685,8 +685,8 @@ async function mainHandler(req, res) {
     console.log('⚠️ [CONFIG] Using default configuration');
   }
   
-  const pageAccessToken = 'EAATMnASMNEsBP0ZBeIDKeO2DwtyzCk9yxyEu7ZAh18crGh59ONAePCw8YQK9KmtPEBpMOJShK72g8BEilGoxP1oUtef14orZACLdyZBrPKI232sFTCsebZC1sv6zZBAwUw4MgGHBjVtZBzoXuC2pZBPvPBDh4r59pjtUWGxyWv00aXr7L6n7ObXVcFHOnABod7aSqtUWiwZDZD';
-  const verifyToken = 'my_verify_token_123';
+  const pageAccessToken = process.env.FB_PAGE_ACCESS_TOKEN || 'YOUR_PAGE_ACCESS_TOKEN';
+  const verifyToken = process.env.FB_VERIFY_TOKEN || 'YOUR_VERIFY_TOKEN';
   const pageId = '261205178149570';
   
   console.log('✅ [CONFIG] Final configuration:', {

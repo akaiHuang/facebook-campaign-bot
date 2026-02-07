@@ -1,16 +1,20 @@
 # Facebook Campaign Bot
 
+## 📋 Quick Summary
+
+> 🤖 **Facebook Campaign Bot** 是一套全自動化的 Facebook 粉絲專頁互動行銷與抽獎系統，從留言偵測、用戶追蹤到自動開獎與 Messenger 回覆，全程無需人工介入。🎯 透過 Facebook Webhooks 即時偵測活動貼文留言，支援關鍵字觸發（如「+1」、「參加」等可配置關鍵字）自動註冊參與者。🛡️ 內建完整防濫用機制：每用戶每貼文重複參與偵測、可配置領獎次數上限、留言驗證防止 Messenger 直接訊息攻擊、以及自我留言過濾防止機器人無限迴圈。🎁 透過 Facebook Graph API v18.0 自動發送個人化訊息與獎品圖片。🔥 完全建構於 Firebase 無伺服器架構（Cloud Functions Gen 2 + Firestore + Hosting），配備 Web 管理後台即時監控統計數據。📊 支援熱更新配置，部署後無需重啟即可調整活動參數。🎪 適合社群行銷人員、品牌活動策劃、粉絲互動經營等場景！
+
 **Automated Fan Page Engagement and Lottery System**
 
 A serverless automation system for running Facebook fan page campaigns -- from comment detection and user tracking to automated lottery draws and Messenger responses. Handles the repetitive mechanics of social campaigns so marketers can focus on creative strategy.
 
 ---
 
-## Why This Exists
+## 💡 Why This Exists
 
 Running engagement campaigns on Facebook fan pages involves constant manual work: monitoring comments, tracking participants, verifying eligibility, drawing winners, and responding to users. This bot automates the entire lifecycle, running 24/7 on Firebase's serverless infrastructure with zero manual intervention once deployed.
 
-## Architecture
+## 🏗️ Architecture
 
 ```
 Facebook Platform (Webhooks)
@@ -58,7 +62,7 @@ Firebase Cloud Functions (Gen 2)
 - Firestore-backed configuration (hot-reloadable without redeployment)
 - Self-comment filtering (prevents bot infinite loops)
 
-## Tech Stack
+## 🛠️ Tech Stack
 
 - **Serverless Platform**: Firebase Cloud Functions (Gen 2)
 - **Database**: Cloud Firestore
@@ -69,7 +73,7 @@ Firebase Cloud Functions (Gen 2)
 - **HTTP Client**: Axios
 - **Security**: HMAC SHA256 webhook verification, Firestore security rules
 
-## Quick Start
+## 🏁 Quick Start
 
 ### Prerequisites
 
@@ -127,7 +131,7 @@ User sends "claim" via Messenger
 Bot checks: commented? --> under claim limit? --> sends prize image
 ```
 
-## Project Structure
+## 📁 Project Structure
 
 ```
 facebook-campaign-bot/

@@ -4,6 +4,10 @@
 
 Facebook Campaign Bot 是一套 Facebook 粉專互動行銷自動化系統，涵蓋留言偵測、名單整理、抽獎與訊息回覆等流程。適合社群小編與活動營運用於降低人工操作成本，並把活動規則落地為可重複執行的機器流程。
 
+## About (EN)
+
+Facebook Campaign Bot automates Facebook Page campaign operations including comment capture, participant tracking, giveaway logic, and replies. It reduces manual operations for social teams and turns repeatable campaign rules into executable workflows.
+
 ## 📋 Quick Summary
 
 > 🤖 **Facebook Campaign Bot** 是一套全自動化的 Facebook 粉絲專頁互動行銷與抽獎系統，從留言偵測、用戶追蹤到自動開獎與 Messenger 回覆，全程無需人工介入。🎯 透過 Facebook Webhooks 即時偵測活動貼文留言，支援關鍵字觸發（如「+1」、「參加」等可配置關鍵字）自動註冊參與者。🛡️ 內建完整防濫用機制：每用戶每貼文重複參與偵測、可配置領獎次數上限、留言驗證防止 Messenger 直接訊息攻擊、以及自我留言過濾防止機器人無限迴圈。🎁 透過 Facebook Graph API v18.0 自動發送個人化訊息與獎品圖片。🔥 完全建構於 Firebase 無伺服器架構（Cloud Functions Gen 2 + Firestore + Hosting），配備 Web 管理後台即時監控統計數據。📊 支援熱更新配置，部署後無需重啟即可調整活動參數。🎪 適合社群行銷人員、品牌活動策劃、粉絲互動經營等場景！
